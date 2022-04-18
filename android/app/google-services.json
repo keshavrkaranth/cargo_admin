@@ -1,0 +1,106 @@
+{
+  "project_info": {
+    "project_number": "514277127247",
+    "firebase_url": "https://cargo-tracking-815a8-default-rtdb.firebaseio.com",
+    "project_id": "cargo-tracking-815a8",
+    "storage_bucket": "cargo-tracking-815a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514277127247:android:b652f8836152c37566663a",
+        "android_client_info": {
+          "package_name": "com.example.cargo_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514277127247-o6as0uk1fvc85l7t56905vdk57lb9ahi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDesMubxml8BIY1XrmziNdS6y6cNGoFBTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514277127247-o6as0uk1fvc85l7t56905vdk57lb9ahi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514277127247:android:c372f8a3262cf90266663a",
+        "android_client_info": {
+          "package_name": "com.example.cargo_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514277127247-o6as0uk1fvc85l7t56905vdk57lb9ahi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDesMubxml8BIY1XrmziNdS6y6cNGoFBTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514277127247-o6as0uk1fvc85l7t56905vdk57lb9ahi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514277127247:android:83404ef68d2e034c66663a",
+        "android_client_info": {
+          "package_name": "com.keshavrkaranth.cargo_tracking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514277127247-2sjl4u5epfivopoq5orb16pvbnbob16k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.keshavrkaranth.cargo_tracking",
+            "certificate_hash": "87aff768da197e03b78a23afe4c1075d70e96b5f"
+          }
+        },
+        {
+          "client_id": "514277127247-o6as0uk1fvc85l7t56905vdk57lb9ahi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDesMubxml8BIY1XrmziNdS6y6cNGoFBTs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514277127247-o6as0uk1fvc85l7t56905vdk57lb9ahi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
