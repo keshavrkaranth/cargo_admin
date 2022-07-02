@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:cargo_admin/screens/adddetails.dart';
+import 'package:cargo_admin/screens/adddrivers.dart';
+import 'package:cargo_admin/screens/loginpage.dart';
 import 'package:cargo_admin/screens/navigationdetails.dart';
 import 'package:cargo_admin/screens/phonelogin.dart';
 import 'package:cargo_admin/screens/searchpage.dart';
@@ -36,7 +38,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isLoading = false;
   final Completer<GoogleMapController> _controller = Completer();
   double mapBottomPadding = 0;
-  double searchSheetHeight = (Platform.isIOS) ? 300 : 275;
+  double searchSheetHeight = (Platform.isIOS) ? 280 : 275;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   double rideDetailsHeight = 0; //(Platform.isAndroid) ? 235 : 200;
   double requestingSheetHeight = 0; //(Platform.isAndroid) ? 195 : 220;
@@ -74,14 +76,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() {
       isLoading = false;
     });
-
   }
 
   void showDetailsSheet() async {
     await getDirection();
     setState(() {
       searchSheetHeight = 0;
-      rideDetailsHeight = (Platform.isAndroid) ? 235 : 260;
+      rideDetailsHeight = (Platform.isAndroid) ? 210 : 260;
       mapBottomPadding = (Platform.isAndroid) ? 240 : 230;
       drawerCanOpen = false;
     });
@@ -155,9 +156,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children:  <Widget>[
-                                Text(
-                                  currentUser!.fullName!,
+                              children: <Widget>[
+                                const Text(
+                                  "ADMIN",
                                   style: const TextStyle(
                                       fontSize: 20, fontFamily: 'Brand-Bold'),
                                 ),
@@ -175,28 +176,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(
                       height: 10,
                     ),
-                     ListTile(
+                    ListTile(
                       leading: const Icon(Icons.navigation),
                       title: const Text(
                         'Add a navigation',
                         style: kDrawerItemStyle,
                       ),
-                       onTap: (){
-                         Navigator.push(
-                           context,
-                           MaterialPageRoute(
-                             builder: (context) => HomePage(),
-                           ),
-                         );
-                       },
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ),
+                        );
+                      },
                     ),
-                     ListTile(
+                    ListTile(
                       leading: const Icon(Icons.history),
                       title: const Text(
                         'Navigation History',
                         style: kDrawerItemStyle,
                       ),
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -204,14 +205,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         );
                       },
-
                     ),
-                    const ListTile(
-                      leading: Icon(Icons.contact_support),
-                      title: Text(
-                        'Support',
+                     ListTile(
+                      leading: const Icon(Icons.add),
+                      title: const Text(
+                        'Add Drivers',
                         style: kDrawerItemStyle,
                       ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddDriver(),
+                          ),
+                        );
+                      },
                     ),
                     const ListTile(
                       leading: Icon(Icons.info),
@@ -226,9 +234,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const PhoneLogin()));
+                                builder: (context) => const LoginPage()));
                       },
-                      leading:  const Icon(Icons.logout),
+                      leading: const Icon(Icons.logout),
                       title: const Text(
                         'Logout',
                         style: kDrawerItemStyle,
@@ -241,7 +249,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             body: Stack(
               children: <Widget>[
                 GoogleMap(
-                  padding: EdgeInsets.only(bottom: mapBottomPadding, top: 40),
+                  padding: const EdgeInsets.only(bottom: 210, top: 40),
                   // initialCameraPosition: _kGooglePlex,
                   initialCameraPosition: cp,
                   compassEnabled: true,
@@ -257,7 +265,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _controller.complete(controller);
 
                     setState(() {
-                      mapBottomPadding = (Platform.isAndroid) ? 280 : 270;
+                      mapBottomPadding = 210;
                     });
                   },
                 ),
@@ -308,7 +316,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     duration: const Duration(microseconds: 150),
                     curve: Curves.easeIn,
                     child: Container(
-                      height: searchSheetHeight,
+                      height: 210,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -382,7 +390,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Row(
                               children: <Widget>[
                                 const Icon(
-                                  Icons.home,
+                                  Icons.location_on,
                                   color: BrandColors.colorDimText,
                                 ),
                                 const SizedBox(
@@ -391,19 +399,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Container(
+                                    SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 .75,
                                         child: Text(
-                                          (Provider.of<AppData>(context)
-                                                      .pickupAddress !=
-                                                  null)
-                                              ? Provider.of<AppData>(context,
-                                                      listen: false)
-                                                  .pickupAddress
-                                                  .placeName
-                                              : "Add Home",
+                                          Provider.of<AppData>(context,
+                                                  listen: false)
+                                              .pickupAddress
+                                              .placeName,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                         )),
@@ -411,40 +415,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       height: 3,
                                     ),
                                     const Text(
-                                      "Your residential address",
-                                      style: TextStyle(
-                                          fontSize: 11,
-                                          color: BrandColors.colorDimText),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const BrandDivider(),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                const Icon(
-                                  Icons.work,
-                                  color: BrandColors.colorDimText,
-                                ),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const <Widget>[
-                                    Text('Add Work'),
-                                    SizedBox(
-                                      height: 3,
-                                    ),
-                                    Text(
-                                      "Your office address",
+                                      "Your Current address",
                                       style: TextStyle(
                                           fontSize: 11,
                                           color: BrandColors.colorDimText),
@@ -515,8 +486,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           );
   }
 
-  void initializeTwilio()async{
-    twilioFlutter =  TwilioFlutter(accountSid: "ACe5540840f09d2c2fc9cabaa750c8d0e3", authToken: "a588aba09e9ca9aa392d739dedfbaeba", twilioNumber: '(938) 300-4223');
+  void initializeTwilio() async {
+    twilioFlutter = TwilioFlutter(
+        accountSid: "ACe5540840f09d2c2fc9cabaa750c8d0e3",
+        authToken: "a588aba09e9ca9aa392d739dedfbaeba",
+        twilioNumber: '+19383004223');
   }
 
   Future<void> getDirection() async {
@@ -623,9 +597,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-
-
-
   void createRideRequest() {
     rideRef = FirebaseDatabase.instance.reference().child('rideRequest').push();
 
@@ -670,7 +641,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       rideDetailsHeight = 0;
       requestingSheetHeight = 0;
       searchSheetHeight = (Platform.isAndroid) ? 275 : 300;
-      mapBottomPadding = (Platform.isAndroid) ? 280 : 270;
+      mapBottomPadding = (Platform.isAndroid) ? 210 : 210;
       drawerCanOpen = true;
     });
     setupPositionLocator();

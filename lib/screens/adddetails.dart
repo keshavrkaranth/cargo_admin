@@ -34,7 +34,7 @@ class _AddDetailsState extends State<AddDetails> {
   List<dynamic> drivers = [];
   List<dynamic> tempDrivers = [];
   List<dynamic> phoneNumbers = [];
-  String? userName = "user";
+  String? userName = "User";
   String? token;
 
   bool loading = true;
@@ -48,7 +48,8 @@ class _AddDetailsState extends State<AddDetails> {
   late DirectionDetails tripDirectionDetails;
   late LatLng pickupLatLng;
   late LatLng dropLatLng;
-
+  late String driverPhone;
+  late String uid;
   @override
   void initState() {
     // TODO: implement initState
@@ -88,8 +89,6 @@ class _AddDetailsState extends State<AddDetails> {
         driverTypesList.add(i);
       }
     });
-    print(companyTypesList);
-    print(driverTypesList);
 
     DatabaseReference ref2 = FirebaseDatabase.instance.ref("users");
 
@@ -121,8 +120,8 @@ class _AddDetailsState extends State<AddDetails> {
       pickupLatLng = LatLng(pickup.latitude, pickup.longitude);
       dropLatLng = LatLng(destination.latitude, destination.longitude);
     });
-    var thisDetails = await HelperMethods.getDirectionsDetails(
-        pickupLatLng, dropLatLng);
+    var thisDetails =
+        await HelperMethods.getDirectionsDetails(pickupLatLng, dropLatLng);
     setState(() {
       tripDirectionDetails = thisDetails!;
     });
@@ -151,7 +150,8 @@ class _AddDetailsState extends State<AddDetails> {
               appBar: AppBar(
                 leading: IconButton(
                   onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, HomePage.id, (route) => false);
                   },
                   icon: const Icon(Icons.arrow_back),
                 ),
@@ -252,7 +252,7 @@ class _AddDetailsState extends State<AddDetails> {
                             border: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.teal),
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(25))),
+                                    BorderRadius.all(Radius.circular(25))),
                             labelText: 'User phone number',
                             labelStyle: TextStyle(
                               fontSize: 14.0,
@@ -263,7 +263,7 @@ class _AddDetailsState extends State<AddDetails> {
                             )),
                         style: const TextStyle(fontSize: 14),
                       ),
-                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.all(30),
                       child: TaxiOutlineButton(
@@ -281,7 +281,7 @@ class _AddDetailsState extends State<AddDetails> {
           );
   }
 
-  void validateInputs() {
+  void validateInputs() async{
     if (value.text.isEmpty) {
       showSnackBar("Driving company is required..");
       return;
@@ -294,13 +294,31 @@ class _AddDetailsState extends State<AddDetails> {
       showSnackBar("Please Enter the user phone number");
       return;
     }
+    await setDriverPhone(driverId.text.toString());
     addDataToFirebase();
-
   }
 
+  Future<void> setDriverPhone(name) async {
+    Query ref = FirebaseDatabase.instance
+        .ref('drivers')
+        .orderByChild("fullname")
+        .equalTo(name);
+    await ref.once().then((value) {
+      final snapshot = value.snapshot;
+      final myData = json.decode(json.encode(snapshot.value));
+      if (myData != null) {
+        Map<String, dynamic> data = Map<String, dynamic>.from(myData);
+        for (var i in data.values) {
+          print("I is $i");
+          setState(() {
+            driverPhone = i['phone'];
+          });
+        }
+      }
+    });
+  }
 
   void addDataToFirebase() {
-
     for (var i in companyTypesList) {
       if (i['id'].toString() == value.text.toString()) {
         setState(() {
@@ -308,30 +326,27 @@ class _AddDetailsState extends State<AddDetails> {
         });
       }
     }
-    String uid = generateRandomString(8);
+    uid = generateRandomString(8);
     Map data = {
-      'created_at':DateTime.now().toString(),
+      'created_at': DateTime.now().toString(),
       'from_address': fromController.text.toString(),
       'from_lat_lng': {
-        'lat':
-            pickupLatLng.latitude,
-        'lng':
-            pickupLatLng.longitude
+        'lat': pickupLatLng.latitude,
+        'lng': pickupLatLng.longitude
       },
       "to_address": toController.text.toString(),
-      'to_lat_lng': {
-        'lat': dropLatLng.latitude,
-        'lng': dropLatLng.longitude
-      },
-      'total_distance':tripDirectionDetails.distanceText.toString(),
-      'total_time':tripDirectionDetails.durationText.toString(),
+      'to_lat_lng': {'lat': dropLatLng.latitude, 'lng': dropLatLng.longitude},
+      'total_distance': tripDirectionDetails.distanceText.toString(),
+      'total_time': tripDirectionDetails.durationText.toString(),
       "company": value.text.toString(),
       "driver": driverId.text.toString(),
+      "driver_phone":driverPhone,
       "user_phone": userPhoneNumber.text.toString(),
       "status": "assigned"
     };
-    print(data);
+    print("Data is $data");
     DatabaseReference ref = FirebaseDatabase.instance.ref("cargos/$uid");
+    print("Uid is $uid");
     ref.set(data);
     sendSms(userPhoneNumber.text);
     setDriverToken(driverId.text);
@@ -344,16 +359,18 @@ class _AddDetailsState extends State<AddDetails> {
         backgroundColor: Colors.blue,
         textColor: Colors.white,
         fontSize: 16.0);
-    Navigator.pushNamedAndRemoveUntil(context, NavigationDetails.id, (route) => false);
+    Navigator.pushNamedAndRemoveUntil(
+        context, NavigationDetails.id, (route) => false);
   }
 
   Future<void> sendFirebaseNotification(token) async {
-
     var headers = {
-      'Authorization': 'key=AAAAd71ONE8:APA91bEDRP0-_qos2fUpGa1ba_M2UkygXWe4hqxnbshysnta947W4LYVcPI11baDIoubjsr6gwbOj5P75MUtKBfTSGO-aTxqU3Mkq6Y1QRdKLKSR5B1JfQidiewDbbQKj_lTpNWeD0_S',
+      'Authorization':
+          'key=AAAAd71ONE8:APA91bEDRP0-_qos2fUpGa1ba_M2UkygXWe4hqxnbshysnta947W4LYVcPI11baDIoubjsr6gwbOj5P75MUtKBfTSGO-aTxqU3Mkq6Y1QRdKLKSR5B1JfQidiewDbbQKj_lTpNWeD0_S',
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://fcm.googleapis.com/fcm/send'));
+    var request =
+        http.Request('POST', Uri.parse('https://fcm.googleapis.com/fcm/send'));
     request.body = json.encode({
       "to": token,
       "notification": {
@@ -367,18 +384,19 @@ class _AddDetailsState extends State<AddDetails> {
       "data": {
         "priority": "high",
         "content_available": true,
-        "ride_id": "-MvMblFOZehJPnprqnif"
+        "ride_id": uid
       }
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
+      print("Check Here");
       print(await response.stream.bytesToString());
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
+
   Future<void> setDriverToken(name) async {
     Query ref = FirebaseDatabase.instance
         .ref('drivers')
@@ -390,6 +408,7 @@ class _AddDetailsState extends State<AddDetails> {
       if (myData != null) {
         Map<String, dynamic> data = Map<String, dynamic>.from(myData);
         for (var i in data.values) {
+          print("I is $i");
           setState(() {
             token = i['token'];
           });
@@ -397,6 +416,7 @@ class _AddDetailsState extends State<AddDetails> {
       }
     });
   }
+
   Future<void> setUserName(number) async {
     Query ref = FirebaseDatabase.instance
         .ref('users')
@@ -418,10 +438,14 @@ class _AddDetailsState extends State<AddDetails> {
 
   void sendSms(number) async {
     await setUserName(number);
+    print("Number is $number");
+    String body =
+        "Hello $userName your package is just assigned to a driver wait till he starts the trip.. to see driver details visit our app";
     twilioFlutter?.sendSMS(
-        toNumber: "+91$number",
-        messageBody:
-            "Hello $userName your package is just assigned to a driver wait till he starts the trip.. to see driver details visit our app");
+      toNumber: "+91$number",
+      messageBody: body,
+    );
+    print("Body is $body");
   }
 
   String generateRandomString(int len) {
